@@ -58,203 +58,205 @@ afterEach(() => {
     }
 });
 
-test('default', async () => {
-    runTestApp();
-    await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-    await assertExitsItself();
-    assertContainsOnlyAppOutputInStdOut();
-    assertStdErrIsEmpty();
-});
+// test('example', async () => {
+//     runTestApp();
+//     await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+//     await assertExitsItself();
+//     assertContainsOnlyAppOutputInStdOut();
+//     assertStdErrIsEmpty();
+// });
 
-xdescribe('original', () => {
-    test('no args', async () => {
-        runTestApp();
-        await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('--inspect', async () => {
-        runTestApp('--inspect');
-        await assertCanConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertContainsDebuggerMessageInStdErr(DefaultDebuggerPort);
-    });
-
-    test('--inspect --inspect-port', async () => {
-        runTestApp('--inspect', `--inspect-port=${AlternativeDebuggerPort}`);
-        await assertCanConnectTcpDebugger(AlternativeDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertContainsDebuggerMessageInStdErr(AlternativeDebuggerPort);
-    });
-
-    test('--inspect --inspect-publish-uid', async () => {
-        runTestApp('--inspect', '--inspect-publish-uid=http');
-        await assertCanConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('--inspect-brk', async () => {
-        runTestApp('--inspect-brk');
-        await assertCanConnectTcpDebugger(DefaultDebuggerPort);
-        assertStdOutIsEmpty();
-    });
-
-    test('--inspect-brk --inspect-port', async () => {
-        runTestApp('--inspect-brk', `--inspect-port=${AlternativeDebuggerPort}`);
-        await assertCanConnectTcpDebugger(AlternativeDebuggerPort);
-        assertStdOutIsEmpty();
-    });
-
-    test('--inspect-brk --inspect-publish-uid', async () => {
-        runTestApp('--inspect-brk', '--inspect-publish-uid=http');
-        await assertCanConnectTcpDebugger(DefaultDebuggerPort);
-        assertStdOutIsEmpty();
-    });
-
-    test('--remote-debugging-port', async () => {
-        runTestApp(`--remote-debugging-port=${AlternativeDebuggerPort}`);
-        await assertCanConnectTcpDebugger(AlternativeDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertContainsRemoteDebuggerMessageInStdErr(AlternativeDebuggerPort);
-    });
-
-    if (process.platform !== 'win32') {
-        test('SIGUSR1', async () => {
+describe('patch', () => {
+    describe('original', () => {
+        test('no args', async () => {
             runTestApp();
-            await sleep(Timeouts.BeforeSendingSigUsr1);
-            ps.kill('SIGUSR1');
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('--inspect', async () => {
+            runTestApp('--inspect');
             await assertCanConnectTcpDebugger(DefaultDebuggerPort);
             await assertExitsItself();
             assertContainsOnlyAppOutputInStdOut();
             assertContainsDebuggerMessageInStdErr(DefaultDebuggerPort);
         });
-    }
 
-    test('ELECTRON_RUN_AS_NODE', async () => {
-        env.ELECTRON_RUN_AS_NODE = '1';
-        runTestApp('not-found.js');
-        await assertExitsWithStatusCode(1);
-        assertStdOutIsEmpty();
-        const stderrStr = Buffer.concat(stderrData).toString('utf8').trim();
-        expect(stderrStr).toMatch(/Cannot find module .*not-found.js/);
-    });
-});
+        test('--inspect --inspect-port', async () => {
+            runTestApp('--inspect', `--inspect-port=${AlternativeDebuggerPort}`);
+            await assertCanConnectTcpDebugger(AlternativeDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertContainsDebuggerMessageInStdErr(AlternativeDebuggerPort);
+        });
 
-xdescribe('patched', () => {
-    beforeAll(async () => {
-        let packagePath;
-        switch (process.platform) {
-            case 'darwin':
-                packagePath = path.join(appPath, 'test-app.app');
-                break;
-            case 'linux':
-                packagePath = path.join(appPath, 'test-app');
-                break;
-            case 'win32':
-                packagePath = path.join(appPath, 'test-app.exe');
-                break;
-            default:
-                throw new Error(`Platform ${process.platform} is not supported`);
-        }
-        return patch({ path: packagePath });
-    });
-
-    test('no args', async () => {
-        runTestApp();
-        await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('--inspect', async () => {
-        runTestApp('--inspect');
-        await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('--inspect --inspect-port', async () => {
-        runTestApp('--inspect', `--inspect-port=${AlternativeDebuggerPort}`);
-        await assertCannotConnectTcpDebugger(AlternativeDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('--inspect --inspect-publish-uid', async () => {
-        runTestApp('--inspect', '--inspect-publish-uid=http');
-        await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('--inspect-brk', async () => {
-        runTestApp('--inspect-brk');
-        await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('[space][space]inspect-brk', async () => {
-        runTestApp('  inspect-brk');
-        await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('--inspect-brk --inspect-port', async () => {
-        runTestApp('--inspect-brk', `--inspect-port=${AlternativeDebuggerPort}`);
-        await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('--inspect-brk --inspect-publish-uid', async () => {
-        runTestApp('--inspect-brk', '--inspect-publish-uid=http');
-        await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    test('--remote-debugging-port', async () => {
-        runTestApp(`--remote-debugging-port=${AlternativeDebuggerPort}`);
-        await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
-    });
-
-    if (process.platform !== 'win32') {
-        test('SIGUSR1', async () => {
-            runTestApp();
-            await sleep(Timeouts.BeforeSendingSigUsr1);
-            ps.kill('SIGUSR1');
-            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-            assertCrashed();
+        test('--inspect --inspect-publish-uid', async () => {
+            runTestApp('--inspect', '--inspect-publish-uid=http');
+            await assertCanConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
             assertStdErrIsEmpty();
         });
-    }
 
-    test('ELECTRON_RUN_AS_NODE', async () => {
-        env.ELECTRON_RUN_AS_NODE = '1';
-        runTestApp('not-found.js');
-        await assertExitsItself();
-        assertContainsOnlyAppOutputInStdOut();
-        assertStdErrIsEmpty();
+        test('--inspect-brk', async () => {
+            runTestApp('--inspect-brk');
+            await assertCanConnectTcpDebugger(DefaultDebuggerPort);
+            assertStdOutIsEmpty();
+        });
+
+        test('--inspect-brk --inspect-port', async () => {
+            runTestApp('--inspect-brk', `--inspect-port=${AlternativeDebuggerPort}`);
+            await assertCanConnectTcpDebugger(AlternativeDebuggerPort);
+            assertStdOutIsEmpty();
+        });
+
+        test('--inspect-brk --inspect-publish-uid', async () => {
+            runTestApp('--inspect-brk', '--inspect-publish-uid=http');
+            await assertCanConnectTcpDebugger(DefaultDebuggerPort);
+            assertStdOutIsEmpty();
+        });
+
+        test('--remote-debugging-port', async () => {
+            runTestApp(`--remote-debugging-port=${AlternativeDebuggerPort}`);
+            await assertCanConnectTcpDebugger(AlternativeDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertContainsRemoteDebuggerMessageInStdErr(AlternativeDebuggerPort);
+        });
+
+        if (process.platform !== 'win32') {
+            test('SIGUSR1', async () => {
+                runTestApp();
+                await sleep(Timeouts.BeforeSendingSigUsr1);
+                ps.kill('SIGUSR1');
+                await assertCanConnectTcpDebugger(DefaultDebuggerPort);
+                await assertExitsItself();
+                assertContainsOnlyAppOutputInStdOut();
+                assertContainsDebuggerMessageInStdErr(DefaultDebuggerPort);
+            });
+        }
+
+        test('ELECTRON_RUN_AS_NODE', async () => {
+            env.ELECTRON_RUN_AS_NODE = '1';
+            runTestApp('not-found.js');
+            await assertExitsWithStatusCode(1);
+            assertStdOutIsEmpty();
+            const stderrStr = Buffer.concat(stderrData).toString('utf8').trim();
+            expect(stderrStr).toMatch(/Cannot find module .*not-found.js/);
+        });
+    });
+
+    describe('patched', () => {
+        beforeAll(async () => {
+            let packagePath;
+            switch (process.platform) {
+                case 'darwin':
+                    packagePath = path.join(appPath, 'test-app.app');
+                    break;
+                case 'linux':
+                    packagePath = path.join(appPath, 'test-app');
+                    break;
+                case 'win32':
+                    packagePath = path.join(appPath, 'test-app.exe');
+                    break;
+                default:
+                    throw new Error(`Platform ${process.platform} is not supported`);
+            }
+            return patch({ path: packagePath });
+        });
+
+        test('no args', async () => {
+            runTestApp();
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('--inspect', async () => {
+            runTestApp('--inspect');
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('--inspect --inspect-port', async () => {
+            runTestApp('--inspect', `--inspect-port=${AlternativeDebuggerPort}`);
+            await assertCannotConnectTcpDebugger(AlternativeDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('--inspect --inspect-publish-uid', async () => {
+            runTestApp('--inspect', '--inspect-publish-uid=http');
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('--inspect-brk', async () => {
+            runTestApp('--inspect-brk');
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('[space][space]inspect-brk', async () => {
+            runTestApp('  inspect-brk');
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('--inspect-brk --inspect-port', async () => {
+            runTestApp('--inspect-brk', `--inspect-port=${AlternativeDebuggerPort}`);
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('--inspect-brk --inspect-publish-uid', async () => {
+            runTestApp('--inspect-brk', '--inspect-publish-uid=http');
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('--remote-debugging-port', async () => {
+            runTestApp(`--remote-debugging-port=${AlternativeDebuggerPort}`);
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        if (process.platform !== 'win32') {
+            test('SIGUSR1', async () => {
+                runTestApp();
+                await sleep(Timeouts.BeforeSendingSigUsr1);
+                ps.kill('SIGUSR1');
+                await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+                assertCrashed();
+                assertStdErrIsEmpty();
+            });
+        }
+
+        test('ELECTRON_RUN_AS_NODE', async () => {
+            env.ELECTRON_RUN_AS_NODE = '1';
+            runTestApp('not-found.js');
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
     });
 });
 

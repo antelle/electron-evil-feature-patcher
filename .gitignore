@@ -1,0 +1,7 @@
+.idea/
+tmp/
+node_modules/
+.DS_Store
+._*
+*.iml
+*.log

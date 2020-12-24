@@ -373,14 +373,14 @@ async function waitForExit() {
         if (typeof ps.exitCode === 'number') {
             return;
         }
+        if (ps.signalCode) {
+            throw new Error(
+                `App crashed with signal ${ps.signalCode}\n` +
+                    `STDOUT: ${Buffer.concat(stdoutData).toString('utf8')}\n` +
+                    `STDERR: ${Buffer.concat(stderrData).toString('utf8')}`
+            );
+        }
     }
-    console.log(
-        'ps',
-        ps.exitCode,
-        ps.signalCode,
-        Buffer.concat(stdoutData).toString('utf8'),
-        Buffer.concat(stderrData).toString('utf8')
-    );
     throw new Error(`The app didn't exit after ${Timeouts.SelfExit}ms`);
 }
 

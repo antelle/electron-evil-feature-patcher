@@ -152,7 +152,7 @@ describe('patched', () => {
             default:
                 throw new Error(`Platform ${process.platform} is not supported`);
         }
-        return patch({ path: packagePath, platform: process.platform });
+        return patch({ path: packagePath });
     });
 
     test('no args', async () => {

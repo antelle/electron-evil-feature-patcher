@@ -50,12 +50,12 @@ node electron-evil-feature-patcher my.app darwin
 Using node.js:
 ```js
 const patch = require('electron-evil-feature-patcher');
-patch({ path: 'your-app-path',  platfor: 'platform' });
+patch({ path: 'your-app-path' });
 ```
 
 For example:
 ```js
-patch({ path: 'my.app', platform: process.platform });
+patch({ path: 'my.app' });
 ```
 
 Patching is done in-place, no backup is made. Second attempt to patch will result in an error.

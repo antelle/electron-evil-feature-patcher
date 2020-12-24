@@ -77,12 +77,12 @@ const replacements = [
 
 if (require.main === module) {
     console.log(`Electron feature patcher v${version}`);
-    const [packagePath, platform] = process.argv.slice(2);
-    if (!packagePath || !platform) {
-        console.log('Usage: node patch path-to-your-electron-package platform');
+    const [packagePath] = process.argv.slice(2);
+    if (!packagePath) {
+        console.log('Usage: node patch path-to-your-electron-package');
         process.exit(1);
     }
-    patch({ path: packagePath, platform });
+    patch({ path: packagePath });
 }
 
 function patch(options) {
@@ -119,23 +119,18 @@ function patch(options) {
 }
 
 function findBinary(options) {
-    switch (options.platform) {
-        case 'darwin':
-            return path.join(
-                options.path,
-                'Contents',
-                'Frameworks',
-                'Electron Framework.framework',
-                'Versions',
-                'A',
-                'Electron Framework'
-            );
-        case 'linux':
-        case 'win32':
-            return options.path;
-        default:
-            throw new Error(`Platform ${options.platform} is not supported`);
+    if (options.path.endsWith('.app')) {
+        return path.join(
+            options.path,
+            'Contents',
+            'Frameworks',
+            'Electron Framework.framework',
+            'Versions',
+            'A',
+            'Electron Framework'
+        );
     }
+    return options.path;
 }
 
 function setFuseWireStatus(data, wireId, enabled) {

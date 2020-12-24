@@ -37,9 +37,8 @@ beforeAll(async () => {
 beforeEach(() => {
     if (process.platform === 'linux') {
         env = {
-            ...process.env,
             ELECTRON_ENABLE_LOGGING: 'true',
-            DISPLAY: ':0' // to prevent SIGABRT, see https://github.com/electron/electron/issues/24211
+            DISPLAY: ':0.0' // to prevent SIGABRT, see https://github.com/electron/electron/issues/24211
         };
     } else {
         env = {};

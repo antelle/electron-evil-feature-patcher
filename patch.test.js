@@ -374,6 +374,13 @@ async function waitForExit() {
             return;
         }
         if (ps.signalCode) {
+            if (
+                process.platform === 'linux' &&
+                Buffer.concat(stderrData).includes('Unable to open X display')
+            ) {
+                // workaround for https://github.com/electron/electron/issues/24211
+                return 0;
+            }
             throw new Error(
                 `App crashed with signal ${ps.signalCode}\n` +
                     `STDOUT: ${Buffer.concat(stdoutData).toString('utf8')}\n` +

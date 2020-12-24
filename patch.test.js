@@ -37,8 +37,10 @@ beforeAll(async () => {
 beforeEach(() => {
     if (process.platform === 'linux') {
         env = {
-            ELECTRON_ENABLE_LOGGING: 'true',
-            DISPLAY: ':0.0' // to prevent SIGABRT, see https://github.com/electron/electron/issues/24211
+            // ELECTRON_ENABLE_LOGGING: 'true',
+            // to prevent SIGABRT, see https://github.com/electron/electron/issues/24211
+            // this doesn't seem to work anyway, see another hack below
+            DISPLAY: ':0'
         };
     } else {
         env = {};
@@ -376,10 +378,12 @@ async function waitForExit() {
         if (ps.signalCode) {
             if (
                 process.platform === 'linux' &&
-                Buffer.concat(stderrData).includes('Unable to open X display')
+                Buffer.concat(stdoutData).toString('utf8').trim() === 'Test app started' &&
+                Buffer.concat(stderrData).toString('utf8').includes('Unable to open X display')
             ) {
                 // workaround for https://github.com/electron/electron/issues/24211
-                return 0;
+                ps.exitCode = 0;
+                return;
             }
             throw new Error(
                 `App crashed with signal ${ps.signalCode}\n` +

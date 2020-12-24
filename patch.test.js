@@ -373,7 +373,13 @@ async function waitForExit() {
             return;
         }
     }
-    console.log('ps', ps.exitCode, ps.signalCode, stdoutData, stderrData);
+    console.log(
+        'ps',
+        ps.exitCode,
+        ps.signalCode,
+        Buffer.concat(stdoutData).toString('utf8'),
+        Buffer.concat(stderrData).toString('utf8')
+    );
     throw new Error(`The app didn't exit after ${Timeouts.SelfExit}ms`);
 }
 

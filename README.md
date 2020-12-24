@@ -1,5 +1,7 @@
 # Electron evil feature patcher
 
+![CI Checks](https://github.com/antelle/electron-evil-feature-patcher/workflows/CI%20Checks/badge.svg)
+
 Patches Electron to remove certain features from it, such as debugging flags, that can be used for evil.
 
 ## Motivation
@@ -39,12 +41,7 @@ This is being addressed in Electron in form of so-called "fuses", run-time toggl
 
 Using the command line:
 ```sh
-node electron-evil-feature-patcher your-app-path os
-```
-
-For example:
-```sh
-node electron-evil-feature-patcher my.app darwin
+node electron-evil-feature-patcher your-app-path
 ```
 
 Using node.js:
@@ -53,12 +50,15 @@ const patch = require('electron-evil-feature-patcher');
 patch({ path: 'your-app-path' });
 ```
 
-For example:
-```js
-patch({ path: 'my.app' });
-```
+`your-app-path` is executable path, for macOS this is a packaged `.app`.
 
 Patching is done in-place, no backup is made. Second attempt to patch will result in an error.
+
+## Future
+
+This is a big and terrible hack, a project like this shouldn't have been created. But that's where we are, we're patching a framework because it's so complicated to build that it's easier to do weird stuff and mess with a binary.
+
+In future, as it's mentioned before, it will be done using electron "fuses". One of them is already in use here for `ELECTRON_RUN_AS_NODE`! I hope others will be added as well.
 
 ## License
 

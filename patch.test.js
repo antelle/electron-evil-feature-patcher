@@ -383,7 +383,7 @@ async function waitForExit() {
                 Buffer.concat(stdoutData).toString('utf8').trim() === 'Test app started' &&
                 Buffer.concat(stderrData)
                     .toString('utf8')
-                    .contains('The futex facility returned an unexpected error code.')
+                    .includes('The futex facility returned an unexpected error code.')
             ) {
                 // workaround for https://github.com/electron/electron/issues/24211
                 ps.exitCode = 0;

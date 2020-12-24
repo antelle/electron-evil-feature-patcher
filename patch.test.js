@@ -55,7 +55,15 @@ afterEach(() => {
     }
 });
 
-describe('original', () => {
+test('default', async () => {
+    runTestApp();
+    await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+    await assertExitsItself();
+    assertContainsOnlyAppOutputInStdOut();
+    assertStdErrIsEmpty();
+});
+
+xdescribe('original', () => {
     test('no args', async () => {
         runTestApp();
         await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
@@ -136,7 +144,7 @@ describe('original', () => {
     });
 });
 
-describe('patched', () => {
+xdescribe('patched', () => {
     beforeAll(async () => {
         let packagePath;
         switch (process.platform) {

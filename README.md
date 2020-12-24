@@ -56,9 +56,9 @@ Patching is done in-place, no backup is made. Second attempt to patch will resul
 
 ## Future
 
-This is a big and terrible hack, a project like this shouldn't have been created. But that's where we are, we're patching a framework because it's so complicated to build that it's easier to do weird stuff and mess with a binary.
+Let's admit that this is a big and terrible hack, a project like this shouldn't have been created. But that's where we are, we're patching a framework because it's so complicated to build that it's easier to do weird stuff and mess with a binary. Sadness. Disappointment. Disenchantment. Misery.
 
-In future, as it's mentioned before, it will be done using electron "fuses". One of them is already in use here for `ELECTRON_RUN_AS_NODE`! I hope others will be added as well.
+In future, as it's mentioned before, it will be done using electron "fuses". One of them is already in use here for `ELECTRON_RUN_AS_NODE`, and I hope others will be added as well! Then this project will be as small as flipping a couple of flags. But that's future.
 
 ## License
 

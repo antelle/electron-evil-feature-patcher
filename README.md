@@ -19,14 +19,13 @@ This is being addressed in Electron in form of so-called "fuses", run-time toggl
 - disable certain feature flags
 - test on all supported operating systems
 - have it right now, not in a year
-- minimal possible patching time
-- simple yet working solution
+- minimize patching time
+- keep it simple
 
 ## Non-goals
 
 - do it all in a nice way
 - support other features
-- provide a long-term solution
 - patch old Electron versions
 - protect from [physically local attacks](https://chromium.googlesource.com/chromium/src/+/master/docs/security/faq.md#Why-arent-physically_local-attacks-in-Chromes-threat-model)
 

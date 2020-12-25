@@ -4,6 +4,8 @@
 
 Patches Electron to remove certain features from it, such as debugging flags, that can be used for evil.
 
+<img src="img/electron.png" alt="logo" width="384" />
+
 ## Motivation
 
 Electron has great debugging support! Unfortunately this can be used not only while developing an app, but also after you have already built and packaged it. This way your app can be started in an unexpected way, for example, an attacker may want to pass `--inspect-brk` and execute code as if it was done by your app.

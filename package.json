@@ -1,6 +1,6 @@
 {
   "name": "electron-evil-feature-patcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Patches Electron to remove certain features from it, such as debugging flags, that can be used for evil",
   "main": "patch.js",
   "repository": {

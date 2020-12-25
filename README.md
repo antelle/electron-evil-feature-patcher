@@ -57,7 +57,7 @@ patch({ path: 'your-app-path' });
 
 `your-app-path` is executable path, for macOS this is a packaged `.app`.
 
-Patching is done in-place, no backup is made. Second attempt to patch will result in an error.
+Patching is done in-place, no backup is made. Second attempt to patch is a no-op.
 
 ## Future
 

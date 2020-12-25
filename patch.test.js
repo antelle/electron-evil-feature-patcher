@@ -139,31 +139,7 @@ describe('patch', () => {
 
     describe('patched', () => {
         beforeAll(async () => {
-            let packagePath;
-            switch (process.platform) {
-                case 'darwin':
-                    packagePath = path.join(appPath, 'test-app.app');
-                    break;
-                case 'linux':
-                    packagePath = path.join(appPath, 'test-app');
-                    break;
-                case 'win32':
-                    packagePath = path.join(appPath, 'test-app.exe');
-                    break;
-                default:
-                    throw new Error(`Platform ${process.platform} is not supported`);
-            }
-            for (let i = 0; i < 10; i++) {
-                try {
-                    return patch({ path: packagePath });
-                } catch (ex) {
-                    if (ex.toString().includes('text file is busy')) {
-                        await sleep(Timeouts.FileIsBusyRetry);
-                        continue;
-                    }
-                    throw ex;
-                }
-            }
+            await patchTestApp();
         });
 
         test('no args', async () => {
@@ -256,8 +232,45 @@ describe('patch', () => {
             assertContainsOnlyAppOutputInStdOut();
             assertStdErrIsEmpty();
         });
+
+        test('repeated patching', async () => {
+            await patchTestApp();
+            runTestApp('--inspect');
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
     });
 });
+
+async function patchTestApp() {
+    let packagePath;
+    switch (process.platform) {
+        case 'darwin':
+            packagePath = path.join(appPath, 'test-app.app');
+            break;
+        case 'linux':
+            packagePath = path.join(appPath, 'test-app');
+            break;
+        case 'win32':
+            packagePath = path.join(appPath, 'test-app.exe');
+            break;
+        default:
+            throw new Error(`Platform ${process.platform} is not supported`);
+    }
+    for (let i = 0; i < 10; i++) {
+        try {
+            return patch({ path: packagePath });
+        } catch (ex) {
+            if (ex.toString().includes('text file is busy')) {
+                await sleep(Timeouts.FileIsBusyRetry);
+                continue;
+            }
+            throw ex;
+        }
+    }
+}
 
 async function assertExitsItself() {
     await waitForExit(ps);

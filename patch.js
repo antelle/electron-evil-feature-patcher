@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
+const PatchedSentinel = 'sLw2p0mwn1P3QsLwGbe';
 const FuseConst = {
     Sentinel: 'dL7pKGdnNz796PbbjQWNKmHXBZaB9tsX',
     ExpectedFuseVersion: 1,
@@ -49,7 +50,7 @@ const replacements = [
     {
         name: 'Command-line option: --inspect-publish-uid',
         search: /\0--inspect-publish-uid\0/g,
-        replace: '\0  inspect-publish-uid\0'
+        replace: `\0  ${PatchedSentinel}\0`
     },
     {
         name: 'Remote debugging options',
@@ -79,6 +80,9 @@ function patch(options) {
         throw new Error(`Binary not found: ${binary}`);
     }
     let data = fs.readFileSync(binary, 'latin1');
+    if (data.includes(PatchedSentinel)) {
+        return;
+    }
     const [, electronVersion] = data.match(/Electron\/(\d+\.\d+\.\d+)/);
     if (electronVersion.split('.')[0] < 12) {
         throw new Error(`Minimal supported Electron version is 12, found ${electronVersion}`);
@@ -138,7 +142,7 @@ function setFuseWireStatus(data, wireId, enabled) {
         throw new Error(`Fuse is too short: ${fuseLength} bytes, expected at least ${wireId}`);
     }
     let wireByte = data.charCodeAt(ix + wireId);
-    if (wireByte === FuseConst.DisabledByte) {
+    if (wireByte === FuseConst.RemovedByte) {
         throw new Error(`Fuse wire ${wireId} is marked as removed`);
     }
     wireByte = String.fromCharCode(enabled ? FuseConst.EnabledByte : FuseConst.DisabledByte);

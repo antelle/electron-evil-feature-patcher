@@ -12,7 +12,7 @@ Electron has great debugging support! Unfortunately this can be used not only wh
 
 Is this a concern in Electron? Yes and no. If your app is not dealing with secrets or if it's not codesigned, it's not an issue at all. However, if you would like to limit the code run under the identity of your app, it can be an issue.
 
-This is being addressed in Electron in form of so-called "fuses", run-time toggles that can be switched on and off: https://github.com/electron/electron/pull/24241. These features should be eventually "fuses" but I'm too lazy to contribute to Electron because the patches we need are located in interesting, hard-to-reach pieces of code, for example in node.js or Chromium. This is not fun to change! In this sense, this solution, or should I say this dirty hack, is a short-lived thing.
+This is being addressed in Electron in form of so-called "fuses", run-time toggles that can be switched on and off: https://www.electronjs.org/docs/tutorial/fuses. These features should be eventually "fuses" but I'm too lazy to contribute to Electron because the patches we need are located in interesting, hard-to-reach pieces of code, for example in node.js or Chromium. This is not fun to change! In this sense, this solution, or should I say this dirty hack, is a short-lived thing.
 
 ## Goals
 
@@ -88,6 +88,9 @@ Detailed information about all replacements:
     This causes segmentation fault when it's passed to `printf`, so even if we reach this place, the process crashes instead of starting debugging.
     - `DevTools listening on ...`
     - `Debugger listening on...`
+- Electron fuses:  
+    See more about them [here](https://www.electronjs.org/docs/tutorial/fuses), this is the only officially supported, sustainable way of patching Electron.
+    - `ELECTRON_RUN_AS_NODE`
 
 ## Future
 

@@ -38,6 +38,9 @@ beforeEach(() => {
     env = {
         ...process.env
     };
+    if (process.platform === 'linux') {
+        env.DISPLAY = ':99.0'; // https://www.electronjs.org/docs/tutorial/testing-on-headless-ci
+    }
 });
 
 afterEach(() => {
@@ -149,6 +152,7 @@ describe('patch', () => {
                 default:
                     throw new Error(`Platform ${process.platform} is not supported`);
             }
+            console.log('processes', ps.spawnSync('ps', ['ax']));
             return patch({ path: packagePath });
         });
 

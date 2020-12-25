@@ -16,10 +16,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Update
-        run: sudo apt-get update
       - name: Configure Xvfb
         run: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        if: ${{ matrix.os == 'ubuntu-latest' }}
       - name: Install npm modules
         run: npm ci
       - name: Run CI checks

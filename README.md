@@ -19,6 +19,8 @@ This is being addressed in Electron in form of so-called "fuses", run-time toggl
 - disable certain feature flags
 - test on all supported operating systems
 - have it right now, not in a year
+- minimal possible patching time
+- simple yet working solution
 
 ## Non-goals
 

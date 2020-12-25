@@ -35,16 +35,7 @@ beforeAll(async () => {
 });
 
 beforeEach(() => {
-    if (process.platform === 'linux') {
-        env = {
-            // ELECTRON_ENABLE_LOGGING: 'true',
-            // to prevent SIGABRT, see https://github.com/electron/electron/issues/24211
-            // this doesn't seem to work anyway, see another hack below
-            DISPLAY: ':0'
-        };
-    } else {
-        env = {};
-    }
+    env = { ...process.env };
 });
 
 afterEach(() => {
@@ -58,15 +49,15 @@ afterEach(() => {
     }
 });
 
-// test('example', async () => {
-//     runTestApp();
-//     await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-//     await assertExitsItself();
-//     assertContainsOnlyAppOutputInStdOut();
-//     assertStdErrIsEmpty();
-// });
+test('example', async () => {
+    runTestApp();
+    await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+    await assertExitsItself();
+    assertContainsOnlyAppOutputInStdOut();
+    assertStdErrIsEmpty();
+});
 
-describe('patch', () => {
+xdescribe('patch', () => {
     describe('original', () => {
         test('no args', async () => {
             runTestApp();
@@ -378,17 +369,6 @@ async function waitForExit() {
             return;
         }
         if (ps.signalCode) {
-            if (
-                process.platform === 'linux' &&
-                Buffer.concat(stdoutData).toString('utf8').trim() === 'Test app started' &&
-                Buffer.concat(stderrData)
-                    .toString('utf8')
-                    .includes('The futex facility returned an unexpected error code.')
-            ) {
-                // workaround for https://github.com/electron/electron/issues/24211
-                ps.exitCode = 0;
-                return;
-            }
             throw new Error(
                 `App crashed with signal ${ps.signalCode}\n` +
                     `STDOUT: ${Buffer.concat(stdoutData).toString('utf8')}\n` +

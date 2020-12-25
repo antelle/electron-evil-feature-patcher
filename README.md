@@ -26,6 +26,7 @@ This is being addressed in Electron in form of so-called "fuses", run-time toggl
 - support other features
 - provide a long-term solution
 - patch old Electron versions
+- protect from [physically local attacks](https://chromium.googlesource.com/chromium/src/+/master/docs/security/faq.md#Why-arent-physically_local-attacks-in-Chromes-threat-model)
 
 ## Removed capabilities
 

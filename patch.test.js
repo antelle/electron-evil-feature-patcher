@@ -348,20 +348,20 @@ function runTestApp(...flags) {
     ps = spawn(binPath, [...flags], { env });
 
     stdoutData = [];
-    ps.stdout.on('data', (data) => {
-        stdoutData.push(data);
-    });
+    // ps.stdout.on('data', (data) => {
+    //     stdoutData.push(data);
+    // });
 
     stderrData = [];
-    ps.stderr.on('data', (data) => {
-        stderrData.push(data);
-    });
+    // ps.stderr.on('data', (data) => {
+    //     stderrData.push(data);
+    // });
 
     return ps;
 }
 
 async function waitForExit() {
-    // ps.stdin.write('exit\n');
+    ps.stdin.write('exit\n');
     const maxDate = Date.now() + Timeouts.SelfExit;
     while (Date.now() < maxDate) {
         await sleep(Timeouts.PollInterval);

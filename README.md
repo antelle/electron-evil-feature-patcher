@@ -62,6 +62,33 @@ patch({ path: 'your-app-path' });
 
 Patching is done in-place, no backup is made. Second attempt to patch is a no-op.
 
+## Internals
+
+How does the patching work? Now the implemented solution is pretty naive, all it does is replacing strings used as command-line options, variable names, etc... When testing the changes I made sure replaced options are not understood by the parser, for example, if `--inspect` is changed to `[space][space]inspect`, it's discarded, so that not possible to use the second variant in the patched version.
+
+This works good enough and doesn't require disassembly. However, this may change and maybe I'll switch to patching via assembly analysis in future. But for now the approach seems to be good enough.
+
+Detailed information about all replacements:
+
+- command-line option dashes removal: `--inspect` => `[space][space]inspect`  
+  Good enough for the node.js option parser, it just discards such options. 
+    - `--inspect`
+    - `--inspect-brk`
+    - `--inspect-brk-node`
+    - `--inspect-port`
+    - `--inspect-publish-uid`
+    - `--debug`
+    - `--debug-brk`
+    - `--debug-port`
+- special characters option replace: `something` => `\n\r\0...`  
+    Used in cases when the JS option parser is applied, this parser can't be fooled with the variant above so it's smart enough to recognize spaces in passed option, but it can't accept other special characters.
+    - `--remote-debugging-port`
+    - `--js-flags`
+- format message breakage: `something` => `some%sing`  
+    This causes segmentation fault when it's passed to `printf`, so even if we reach this place, the process crashes instead of starting debugging.
+    - `DevTools listening on ...`
+    - `Debugger listening on...`
+
 ## Future
 
 In future, as it's mentioned before, it will be done using electron "fuses". One of them is already in use here for `ELECTRON_RUN_AS_NODE`, and I hope others will be added as well! Then this project will be as small as flipping a couple of flags. But that's future.

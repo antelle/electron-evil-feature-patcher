@@ -1,6 +1,6 @@
 const path = require('path');
 const http = require('http');
-const { spawn, spawnSync } = require('child_process');
+const { spawn } = require('child_process');
 
 const makeTestPackage = require('./make-test-package');
 
@@ -16,7 +16,8 @@ const Timeouts = {
     PollInterval: 100,
     BeforeSendingSigUsr1: 2000,
     DebuggerConnect: 3000,
-    SelfExit: 6000
+    SelfExit: 6000,
+    FileIsBusyRetry: 1000
 };
 
 let env;
@@ -152,8 +153,17 @@ describe('patch', () => {
                 default:
                     throw new Error(`Platform ${process.platform} is not supported`);
             }
-            console.log('processes', spawnSync('ps', ['ax']).stdout.toString('utf8'));
-            return patch({ path: packagePath });
+            for (let i = 0; i < 10; i++) {
+                try {
+                    return patch({ path: packagePath });
+                } catch (ex) {
+                    if (ex.toString().includes('text file is busy')) {
+                        await sleep(Timeouts.FileIsBusyRetry);
+                        continue;
+                    }
+                    throw ex;
+                }
+            }
         });
 
         test('no args', async () => {

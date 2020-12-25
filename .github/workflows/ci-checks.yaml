@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install deps
-        run: sudo apt-get -y install xorg
+        run: sudo apt-get -y install dbus-x11 xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable
       - name: NPM install
         run: npm ci
       - name: Run CI checks

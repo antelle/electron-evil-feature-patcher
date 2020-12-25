@@ -15,7 +15,7 @@ function createWindow() {
 app.whenReady().then(() => {
     console.log('Test app started');
     setTimeout(() => win.close(), 5000);
-    //process.stdin.on('data', () => process.exit(0));
+    process.stdin.on('data', () => win.close());
 
     createWindow();
 });

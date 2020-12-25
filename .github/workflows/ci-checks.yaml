@@ -20,7 +20,11 @@ jobs:
         run: sudo apt-get update
       - name: Install deps
         run: sudo apt-get -y install xorg xvfb gtk2-engines-pixbuf dbus-x11 xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable
-      - name: NPM install
+      - name: Install npm modules
         run: npm ci
+      - name: Configure Xvfb
+        run: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
       - name: Run CI checks
         run: npm test
+        env:
+          DISPLAY: :99.0 # https://www.electronjs.org/docs/tutorial/testing-on-headless-ci

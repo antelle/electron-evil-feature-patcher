@@ -4,7 +4,7 @@
 
 Patches Electron to remove certain features from it, such as debugging flags, that can be used for evil.
 
-<img src="img/electron.png" alt="logo" width="384" />
+<img src="img/electron-evil-feature-patcher.png" alt="logo" width="384" />
 
 ## Motivation
 

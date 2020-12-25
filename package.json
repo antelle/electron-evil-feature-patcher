@@ -25,5 +25,8 @@
     "eslint": "^7.16.0",
     "jest": "^26.6.3",
     "prettier": "^2.2.1"
+  },
+  "bin": {
+    "electron-evil-feature-patcher": "cli.js"
   }
 }

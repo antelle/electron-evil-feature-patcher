@@ -41,7 +41,12 @@ This is being addressed in Electron in form of so-called "fuses", run-time toggl
 
 Using the command line:
 ```sh
-node electron-evil-feature-patcher your-app-path
+npx electron-evil-feature-patcher your-app-path
+```
+
+Without `npx`:
+```sh
+node electron-evil-feature-patcher/cli your-app-path
 ```
 
 Using node.js:

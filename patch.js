@@ -1,8 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 
-const { version } = require('./package.json');
-
 const FuseConst = {
     Sentinel: 'dL7pKGdnNz796PbbjQWNKmHXBZaB9tsX',
     ExpectedFuseVersion: 1,
@@ -74,16 +72,6 @@ const replacements = [
         replace: '\r\n -\0\x01\b\'"\0'
     }
 ];
-
-if (require.main === module) {
-    console.log(`Electron feature patcher v${version}`);
-    const [packagePath] = process.argv.slice(2);
-    if (!packagePath) {
-        console.log('Usage: node patch path-to-your-electron-package');
-        process.exit(1);
-    }
-    patch({ path: packagePath });
-}
 
 function patch(options) {
     const binary = findBinary(options);

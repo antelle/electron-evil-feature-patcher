@@ -70,6 +70,8 @@ Is there a way to use one of disabled capabilities in a patched app?
 
 Please [let me know](https://github.com/antelle/electron-evil-feature-patcher/issues/new)!
 
+Are you using this project in your app? I'd be interested to hear from you, [drop me a line](mailto:antelle.net@gmail.com?subject=electron-evil-feature-patcher)!
+
 ## License
 
 MIT

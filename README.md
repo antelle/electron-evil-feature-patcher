@@ -6,6 +6,22 @@ Patches Electron to remove certain features from it, such as debugging flags, th
 
 <img src="img/electron-evil-feature-patcher.png" alt="logo" width="384" />
 
+Before:
+```sh
+% test-app.app/Contents/MacOS/test-app --inspect
+Debugger listening on ws://127.0.0.1:9229/71e61f6e-c559-48a1-9b73-1530f5fd111a
+For help, see: https://nodejs.org/en/docs/inspector
+Test app started
+```
+
+After:
+```sh
+% test-app.app/Contents/MacOS/test-app --inspect
+Test app started
+```
+
+More info about removed options can be found [below](#removed-capabilities).
+
 ## Motivation
 
 Electron has great debugging support! Unfortunately this can be used not only while developing an app, but also after you have already built and packaged it. This way your app can be started in an unexpected way, for example, an attacker may want to pass `--inspect-brk` and execute code as if it was done by your app.

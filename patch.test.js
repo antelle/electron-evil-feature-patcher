@@ -35,7 +35,10 @@ beforeAll(async () => {
 });
 
 beforeEach(() => {
-    env = { ...process.env };
+    env = {
+        DISPLAY: ':0',
+        ...process.env
+    };
 });
 
 afterEach(() => {
@@ -348,14 +351,14 @@ function runTestApp(...flags) {
     ps = spawn(binPath, [...flags], { env });
 
     stdoutData = [];
-    // ps.stdout.on('data', (data) => {
-    //     stdoutData.push(data);
-    // });
+    ps.stdout.on('data', (data) => {
+        stdoutData.push(data);
+    });
 
     stderrData = [];
-    // ps.stderr.on('data', (data) => {
-    //     stderrData.push(data);
-    // });
+    ps.stderr.on('data', (data) => {
+        stderrData.push(data);
+    });
 
     return ps;
 }

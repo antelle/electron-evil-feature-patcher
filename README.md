@@ -105,7 +105,7 @@ Please [let me know](https://github.com/antelle/electron-evil-feature-patcher/is
 
 Are you using this project in your app? I'd be interested to hear from you, [drop me a line](mailto:antelle.net@gmail.com?subject=electron-evil-feature-patcher)!
 
-This project fixed the vulnerability in your product? Consider [donating](https://github.com/sponsors/antelle), although the fixes are minimalistic and simple, the research took time!
+This project fixed a vulnerability in your product? Consider [donating](https://github.com/sponsors/antelle), although the fixes are minimalistic and simple, the research took time!
 
 ## License
 

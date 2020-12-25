@@ -86,7 +86,7 @@ Detailed information about all replacements:
     - `--remote-debugging-port`
     - `--js-flags`
 - format message breakage: `something` => `some%sing`  
-    This causes segmentation fault when it's passed to `printf`, so even if we reach this place, the process crashes instead of starting debugging.
+    This causes segmentation fault when it's passed to `printf`, so even if we reach this place, the process crashes instead of starting debugging. It's the way we prevent initiating debugging with `SIGUSR1`.
     - `DevTools listening on ...`
     - `Debugger listening on...`
 - Electron fuses:  

@@ -36,7 +36,6 @@ beforeAll(async () => {
 
 beforeEach(() => {
     env = {
-        ELECTRON_ENABLE_LOGGING: 'true',
         ...process.env
     };
 });
@@ -348,7 +347,6 @@ function runTestApp(...flags) {
         default:
             throw new Error(`Platform ${process.platform} is not supported`);
     }
-    console.log(env);
     ps = spawn(binPath, [...flags], { env });
 
     stdoutData = [];

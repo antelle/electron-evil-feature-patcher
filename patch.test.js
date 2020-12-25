@@ -51,15 +51,7 @@ afterEach(() => {
     }
 });
 
-test('example', async () => {
-    runTestApp();
-    await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
-    await assertExitsItself();
-    assertContainsOnlyAppOutputInStdOut();
-    assertStdErrIsEmpty();
-});
-
-xdescribe('patch', () => {
+describe('patch', () => {
     describe('original', () => {
         test('no args', async () => {
             runTestApp();

@@ -37,7 +37,7 @@ beforeAll(async () => {
 beforeEach(() => {
     env = {
         ELECTRON_ENABLE_LOGGING: 'true',
-        DISPLAY: ':0',
+        DISPLAY: '127.0.0.1:10.0',
         ...process.env
     };
 });

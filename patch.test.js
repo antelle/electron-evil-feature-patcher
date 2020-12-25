@@ -1,6 +1,6 @@
 const path = require('path');
 const http = require('http');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 
 const makeTestPackage = require('./make-test-package');
 
@@ -152,7 +152,7 @@ describe('patch', () => {
                 default:
                     throw new Error(`Platform ${process.platform} is not supported`);
             }
-            console.log('processes', ps.spawnSync('ps', ['ax']));
+            console.log('processes', spawnSync('ps', ['ax']).stdout.toString('utf8'));
             return patch({ path: packagePath });
         });
 

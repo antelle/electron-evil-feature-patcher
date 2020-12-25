@@ -63,6 +63,13 @@ Patching is done in-place, no backup is made. Second attempt to patch is a no-op
 
 In future, as it's mentioned before, it will be done using electron "fuses". One of them is already in use here for `ELECTRON_RUN_AS_NODE`, and I hope others will be added as well! Then this project will be as small as flipping a couple of flags. But that's future.
 
+## Questions
+
+Do you know another option to execute code in Electron?  
+Is there a way to use one of disabled capabilities in a patched app?  
+
+Please [let me know](https://github.com/antelle/electron-evil-feature-patcher/issues/new)!
+
 ## License
 
 MIT

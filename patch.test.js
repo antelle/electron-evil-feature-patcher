@@ -361,7 +361,7 @@ function runTestApp(...flags) {
 }
 
 async function waitForExit() {
-    ps.stdin.write('exit\n');
+    // ps.stdin.write('exit\n');
     const maxDate = Date.now() + Timeouts.SelfExit;
     while (Date.now() < maxDate) {
         await sleep(Timeouts.PollInterval);

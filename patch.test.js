@@ -190,6 +190,14 @@ describe('patch', () => {
             assertStdErrIsEmpty();
         });
 
+        test('inspect-brk', async () => {
+            runTestApp('inspect-brk');
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
         test('--inspect-brk --inspect-port', async () => {
             runTestApp('--inspect-brk', `--inspect-port=${AlternativeDebuggerPort}`);
             await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
@@ -215,7 +223,39 @@ describe('patch', () => {
         });
 
         test('xx\\r\\n[space]', async () => {
-            runTestApp(`xx\r\n[space]=${AlternativeDebuggerPort}`);
+            runTestApp(`xx\r\n =${AlternativeDebuggerPort}`);
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('xx\\r\\n[space] with quotes', async () => {
+            runTestApp(`'xx\r\n '=${AlternativeDebuggerPort}`);
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('xx\\r\\n', async () => {
+            runTestApp(`xx\r\n=${AlternativeDebuggerPort}`);
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('xx\\r', async () => {
+            runTestApp(`xx\r=${AlternativeDebuggerPort}`);
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
+        test('xx', async () => {
+            runTestApp(`xx=${AlternativeDebuggerPort}`);
             await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
             await assertExitsItself();
             assertContainsOnlyAppOutputInStdOut();

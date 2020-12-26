@@ -108,9 +108,9 @@ Detailed information about all replacements:
     - `--remote-debugging-pipe`
     - `--remote-debugging-port`
 - format message breakage: `something` => `some%sing`  
-    This causes segmentation fault when it's passed to `printf`, so even if we reach this place, the process crashes instead of starting debugging. It's the way we prevent initiating debugging with `SIGUSR1`.
+    Causes segmentation fault when it's passed to `printf`, so even if we reach this place, the process crashes instead of starting debugging. It's the way we prevent initiating debugging with `SIGUSR1`.
     - `DevTools listening on ...`
-    - `Debugger listening on...`
+    - `Debugger listening on ...`
 - Electron fuses:  
     See more about them [here](https://www.electronjs.org/docs/tutorial/fuses), this is the only officially supported, sustainable way of patching Electron.
     - `ELECTRON_RUN_AS_NODE`

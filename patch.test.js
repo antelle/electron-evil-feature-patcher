@@ -132,7 +132,7 @@ describe('patch', () => {
             runTestApp('not-found.js');
             await assertExitsWithStatusCode(1);
             assertStdOutIsEmpty();
-            const stderrStr = Buffer.concat(stderrData).toString('utf8').trim();
+            const stderrStr = stdioToStr(stderrData);
             expect(stderrStr).toMatch(/Cannot find module .*not-found.js/);
         });
     });
@@ -336,12 +336,12 @@ function assertCrashed() {
 }
 
 function assertContainsOnlyAppOutputInStdOut() {
-    const stdoutStr = Buffer.concat(stdoutData).toString('utf8').trim();
+    const stdoutStr = stdioToStr(stdoutData);
     expect(stdoutStr).toBe('Test app started');
 }
 
 function assertContainsDebuggerMessageInStdErr(port) {
-    const stderrStr = Buffer.concat(stderrData).toString('utf8').trim();
+    const stderrStr = stdioToStr(stderrData);
     expect(stderrStr).toMatch(
         new RegExp(
             `^Debugger listening on ws://127\\.0\\.0\\.1:${port}/[\\w-]{36}\\r?\\n` +
@@ -351,7 +351,7 @@ function assertContainsDebuggerMessageInStdErr(port) {
 }
 
 function assertContainsRemoteDebuggerMessageInStdErr(port) {
-    const stderrStr = Buffer.concat(stderrData).toString('utf8').trim();
+    const stderrStr = stdioToStr(stderrData);
     expect(stderrStr.trim()).toMatch(
         new RegExp(
             `^DevTools listening on ws://127\\.0\\.0\\.1:${port}/devtools/browser/[\\w-]{36}$`
@@ -440,8 +440,8 @@ async function waitForExit() {
         if (ps.signalCode) {
             throw new Error(
                 `App crashed with signal ${ps.signalCode}\n` +
-                    `STDOUT: ${Buffer.concat(stdoutData).toString('utf8')}\n` +
-                    `STDERR: ${Buffer.concat(stderrData).toString('utf8')}`
+                    `STDOUT: ${stdioToStr(stdoutData)}\n` +
+                    `STDERR: ${stdioToStr(stderrData)}`
             );
         }
     }

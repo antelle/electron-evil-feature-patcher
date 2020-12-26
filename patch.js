@@ -53,9 +53,29 @@ const replacements = [
         replace: `\0  ${PatchedSentinel}\0`
     },
     {
-        name: 'Remote debugging options',
+        name: 'Electron option: javascript-harmony',
+        search: /\0javascript-harmony\0/g,
+        replace: '\0xx\0ascript-harmony\0'
+    },
+    {
+        name: 'Electron option: js-flags',
+        search: /\0js-flags\0/g,
+        replace: '\0xx\r\n \0\0\0\0'
+    },
+    {
+        name: 'Electron option: remote-debugging-pipe',
+        search: /\0remote-debugging-pipe\0/g,
+        replace: '\0xx\r\n \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'
+    },
+    {
+        name: 'Electron option: remote-debugging-port',
         search: /\0remote-debugging-port\0/g,
-        replace: '\r\n ote\0-debugging-port\0'
+        replace: '\0xx\r\n \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'
+    },
+    {
+        name: 'Electron option: wait-for-debugger-children',
+        search: /\0wait-for-debugger-children\0/g,
+        replace: '\0xx\r\n \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'
     },
     {
         name: 'DevTools listening message',
@@ -66,11 +86,6 @@ const replacements = [
         name: 'Debugger listening message',
         search: /\0Debugger listening on %s\n\0/g,
         replace: '\0%s%s%s%s%s%s%s%s%s%s%s%s\n\0'
-    },
-    {
-        name: 'JS flags option',
-        search: /\0js-flags\0/g,
-        replace: '\r\n -\0\x01\b\'"\0'
     }
 ];
 

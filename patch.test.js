@@ -214,6 +214,14 @@ describe('patch', () => {
             assertStdErrIsEmpty();
         });
 
+        test('xx\\r\\n[space]', async () => {
+            runTestApp(`xx\r\n[space]=${AlternativeDebuggerPort}`);
+            await assertCannotConnectTcpDebugger(DefaultDebuggerPort);
+            await assertExitsItself();
+            assertContainsOnlyAppOutputInStdOut();
+            assertStdErrIsEmpty();
+        });
+
         if (process.platform !== 'win32') {
             test('SIGUSR1', async () => {
                 runTestApp();

@@ -32,9 +32,9 @@ This is being addressed in Electron in form of so-called "fuses", run-time toggl
 
 ## Goals
 
-- disable certain feature flags
-- test on all supported operating systems
-- have it right now, not in a year
+- disable all debugging features
+- test on supported operating systems
+- have it right now
 - minimize patching time
 - keep it simple
 
@@ -52,6 +52,7 @@ This is being addressed in Electron in form of so-called "fuses", run-time toggl
 - [`--inspect-port`](https://www.electronjs.org/docs/api/command-line-switches#--inspect-porthostport)
 - [`--inspect`](https://www.electronjs.org/docs/api/command-line-switches#--inspecthostport)
 - [`--inspect-publish-uid`](https://www.electronjs.org/docs/api/command-line-switches#--inspect-publish-uidstderrhttp)
+- [`--remote-debugging-pipe`](https://github.com/electron/electron/blob/4588a411610ee4095ab2a47e086f23fa4730e50e/shell/browser/electron_browser_main_parts.cc#L464)
 - [`--remote-debugging-port`](https://www.electronjs.org/docs/api/command-line-switches#--remote-debugging-portport)
 - [`--js-flags`](https://www.electronjs.org/docs/api/command-line-switches#--js-flagsflags)
 - [`SIGUSR1`](https://nodejs.org/fr/docs/guides/debugging-getting-started/#enable-inspector)
@@ -79,11 +80,15 @@ patch({ path: 'your-app-path' });
 
 Patching is done in-place, no backup is made. Second attempt to patch is a no-op.
 
+## Version support
+
+Supported Electron versions are 12 and above.
+
 ## Internals
 
 How does the patching work? Now the implemented solution is pretty naive, all it does is replacing strings used as command-line options, variable names, etc... When testing the changes I made sure replaced options are not understood by the parser, for example, if `--inspect` is changed to `[space][space]inspect`, it's discarded, so that not possible to use the second variant in the patched version.
 
-This works good enough and doesn't require disassembly. However, this may change and maybe I'll switch to patching via assembly analysis in future. But for now the approach seems to be good enough.
+This works good enough and doesn't require disassembly. However, this may change and maybe I'll switch to patching via assembly analysis in future. But for now the approach seems to solve our problem quite well.
 
 Detailed information about all replacements:
 
@@ -97,10 +102,11 @@ Detailed information about all replacements:
     - `--debug`
     - `--debug-brk`
     - `--debug-port`
-- special characters option replace: `something` => `\n\r\0...`  
-    Used in cases when the JS option parser is applied, this parser can't be fooled with the variant above so it's smart enough to recognize spaces in passed option, but it can't accept other special characters.
-    - `--remote-debugging-port`
+- command-line option shadowing: `something` => `xxx` + `another` => `xxx`  
+    Used in cases when the Electron option parser is applied, this parser can't be fooled with the variant above, but it adds options to a hashmap, so here we pass the same string twice and the evil option is erased.
     - `--js-flags`
+    - `--remote-debugging-pipe`
+    - `--remote-debugging-port`
 - format message breakage: `something` => `some%sing`  
     This causes segmentation fault when it's passed to `printf`, so even if we reach this place, the process crashes instead of starting debugging. It's the way we prevent initiating debugging with `SIGUSR1`.
     - `DevTools listening on ...`
@@ -108,6 +114,15 @@ Detailed information about all replacements:
 - Electron fuses:  
     See more about them [here](https://www.electronjs.org/docs/tutorial/fuses), this is the only officially supported, sustainable way of patching Electron.
     - `ELECTRON_RUN_AS_NODE`
+
+## Testing
+
+To run tests:
+```sh
+npm test
+```
+
+They will build a test app, test non-patched and patched versions.
 
 ## Future
 

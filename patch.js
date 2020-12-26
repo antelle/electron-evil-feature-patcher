@@ -55,7 +55,7 @@ const replacements = [
     {
         name: 'Electron option: javascript-harmony',
         search: /\0javascript-harmony\0/g,
-        replace: '\0xx\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'
+        replace: '\0xx\r\n \0\0\0\0\0\0\0\0\0\0\0\0\0\0'
     },
     {
         name: 'Electron option: js-flags',

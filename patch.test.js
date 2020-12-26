@@ -132,8 +132,7 @@ describe('patch', () => {
             runTestApp('not-found.js');
             await assertExitsWithStatusCode(1);
             assertStdOutIsEmpty();
-            const stderrStr = stdioToStr(stderrData);
-            expect(stderrStr).toMatch(/Cannot find module .*not-found.js/);
+            expect(stdioToStr(stderrData)).toMatch(/Cannot find module .*not-found.js/);
         });
     });
 
@@ -336,13 +335,11 @@ function assertCrashed() {
 }
 
 function assertContainsOnlyAppOutputInStdOut() {
-    const stdoutStr = stdioToStr(stdoutData);
-    expect(stdoutStr).toBe('Test app started');
+    expect(stdioToStr(stdoutData)).toBe('Test app started');
 }
 
 function assertContainsDebuggerMessageInStdErr(port) {
-    const stderrStr = stdioToStr(stderrData);
-    expect(stderrStr).toMatch(
+    expect(stdioToStr(stderrData)).toMatch(
         new RegExp(
             `^Debugger listening on ws://127\\.0\\.0\\.1:${port}/[\\w-]{36}\\r?\\n` +
                 'For help, see: https://nodejs.org/en/docs/inspector$'
@@ -351,8 +348,7 @@ function assertContainsDebuggerMessageInStdErr(port) {
 }
 
 function assertContainsRemoteDebuggerMessageInStdErr(port) {
-    const stderrStr = stdioToStr(stderrData);
-    expect(stderrStr.trim()).toMatch(
+    expect(stdioToStr(stderrData)).toMatch(
         new RegExp(
             `^DevTools listening on ws://127\\.0\\.0\\.1:${port}/devtools/browser/[\\w-]{36}$`
         )
@@ -368,7 +364,7 @@ function assertStdOutIsEmpty() {
 }
 
 function stdioToStr(stdio) {
-    return Buffer.from(stdio).toString('utf8').trim().replace(/\0/g, '');
+    return Buffer.concat(stdio).toString('utf8').trim().replace(/\0/g, '');
 }
 
 async function assertCanConnectTcpDebugger(port) {

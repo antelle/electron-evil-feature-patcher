@@ -128,6 +128,35 @@ They will build a test app, test non-patched and patched versions.
 
 In future, as it's mentioned before, it will be done using electron "fuses". One of them is already in use here for `ELECTRON_RUN_AS_NODE`, and I hope others will be added as well! Then this project will be as small as flipping a couple of flags. But that's future.
 
+## Known issues
+
+You won't be able to use `fork` because it's built on `ELECTRON_RUN_AS_NODE`. Instead, I recommend the following:
+
+1. start a new process from the main process, not renderer
+2. come up with a suitable name of the command-line argument, for example, let it be `--my-worker`
+3. handle this argument in your main.js (application entry point), so that it runs the desired logic instead of creating windows
+4. don't forget to handle `disconnect` event that will happen when your app is terminated:
+    ```js
+    process.on('disconnect', () => process.exit(0));
+    ```
+5. spawn a helper process like this:
+    ```js
+    spawn(process.helperExecPath, [
+        '--my-worker',
+        '--in-process-gpu',
+        '--disable-gpu'
+    ], {
+        env: process.env,
+        stdio: ['ignore', 'ignore', 'ignore', 'ipc']
+    });
+    ```
+
+Pay attention to `process.helperExecPath` and not `process.execPath` used here. If you use `execPath`, it will start another instance of your app, which is not what you would expect from `fork`.
+
+After this you can communicate with the process as usual via IPC: `process.send(...)`, `process.on('message', ...)`, etc...
+
+There are extra flags here: `--in-process-gpu` and `--disable-gpu`. They're added to prevent another GPU helper from starting because it's unlikely you will need GPU there. You can remove them, however your app will spawn two processes instead of one. This may be seen by users as strange behavior.
+
 ## Questions
 
 Do you know another option to execute code in Electron?  

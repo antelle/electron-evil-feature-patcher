@@ -90,19 +90,35 @@ const replacements = [
 ];
 
 function patch(options) {
+    const { verbose } = options;
     const binary = findBinary(options);
     if (!fs.existsSync(binary)) {
         throw new Error(`Binary not found: ${binary}`);
     }
+    if (verbose) {
+        console.log(`Found binary: ${binary}`);
+    }
     let data = fs.readFileSync(binary, 'latin1');
+    if (verbose) {
+        console.log(`Read: ${data.length} bytes`);
+    }
     if (data.includes(PatchedSentinel)) {
+        if (verbose) {
+            console.log(`Already patched`);
+        }
         return;
     }
     const [, electronVersion] = data.match(/Electron\/(\d+\.\d+\.\d+)/);
+    if (verbose) {
+        console.log(`Found version: ${electronVersion}`);
+    }
     if (electronVersion.split('.')[0] < 12) {
         throw new Error(`Minimal supported Electron version is 12, found ${electronVersion}`);
     }
     data = setFuseWireStatus(data, FuseConst.RunAsNode, false);
+    if (verbose) {
+        console.log(`Fuse wire status set`);
+    }
     for (const replacement of replacements) {
         let replaced = false;
         data = data.replace(replacement.search, (match) => {
@@ -121,8 +137,17 @@ function patch(options) {
         if (!replaced) {
             throw new Error(`Not found: ${replacement.name}`);
         }
+        if (verbose) {
+            console.log(`Replaced: ${replacement.name}`);
+        }
+    }
+    if (verbose) {
+        console.log(`Writing output file...`);
     }
     fs.writeFileSync(binary, Buffer.from(data, 'latin1'));
+    if (verbose) {
+        console.log(`Done`);
+    }
 }
 
 function findBinary(options) {

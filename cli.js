@@ -10,4 +10,6 @@ if (!packagePath) {
     process.exit(1);
 }
 
-patch({ path: packagePath });
+const verbose = process.argv.includes('--verbose');
+
+patch({ path: packagePath, verbose });
